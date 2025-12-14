@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -11,38 +12,47 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
-const loginSchema = z.object({
+const registerSchema = z.object({
     email : z.email("Please enter your email"),
-    password : z.string().min(1, "Please enter your password")
-    ,
+    password : z.string().min(1, "Please enter your password"),
+    confirmPassword : z.string(),
+})
+.refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords dont match",
+    path: ["confirmPassword"]
 })
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export function LoginForm() {
+export function RegisterForm() {
     const router = useRouter();
 
-    const form = useForm<LoginFormValues>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<RegisterFormValues>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             email: "",
             password: "",
+            confirmPassword: "",
         },
     })
 
-    const onSubmit = async(values: LoginFormValues) => {
-        await authClient.signIn.email({
-            email: values.email,
-            password: values.password,
-            callbackURL: "/"
-        }, {
-            onSuccess: () => {
-                router.push("/")
+    const onSubmit = async(values: RegisterFormValues) => {
+        await authClient.signUp.email(
+            {
+                name: values.email,
+                email: values.email,
+                password: values.password,
+                callbackURL: "/"
             },
-            onError: (ctx) => {
-                toast.error(ctx.error.message)
-            },
-        });
+            {
+                onSuccess: () => {
+                    router.push("/");
+                },
+                onError: (ctx) => {
+                    toast.error(ctx.error.message);
+                }
+            }
+        )
     }
 
     const isPending = form.formState.isSubmitting;
@@ -52,10 +62,10 @@ export function LoginForm() {
             <Card>
                 <CardHeader className="text-center">
                     <CardTitle>
-                        Welcome back
+                        Get Started
                     </CardTitle>
                     <CardDescription>
-                        Login to continue
+                       Create your account to get started
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -115,14 +125,31 @@ export function LoginForm() {
                                             </FormItem>
                                         )}
                                     />
+                                    <FormField 
+                                        control = {form.control}
+                                        name = "confirmPassword"
+                                        render = {({ field }) =>(
+                                            <FormItem>
+                                                <FormLabel>Confirm Password</FormLabel>
+                                                <FormControl>
+                                                    <Input 
+                                                        type = "password"
+                                                        placeholder="Enter your Password"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
                                     <Button type="submit" className="w-full" disabled={isPending}>
-                                        Login
+                                        Sign up
                                     </Button>
                                 </div>
                                 <div className="text-center text-sm">
-                                    Don't have an account? {" "}
-                                    <Link href="/signup" className="underline underline-offset-4">
-                                        Sign Up
+                                    Already have an account? {" "}
+                                    <Link href="/login" className="underline underline-offset-4">
+                                        Login
                                     </Link>
                                 </div>
                             </div>
