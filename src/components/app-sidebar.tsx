@@ -12,7 +12,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem} from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
-import { useHasActiveSubscription } from "@/features/auth/components/subscription/hooks/use-subscription";
+import { useHasActiveSubscription } from "@/features/subscription/hooks/use-subscription";
 
 const menuItems = [
    {
