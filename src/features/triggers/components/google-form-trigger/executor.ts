@@ -1,0 +1,33 @@
+import type { NodeExecutor } from "@/features/executions/types";
+import { googleFormTriggerChannel } from "@/inngest/channels/google-form-trigger";
+
+type GoogleFormTriggerData = Record<string , unknown>;
+
+export const googleFormTriggerExecutor: NodeExecutor<GoogleFormTriggerData> = async({
+    nodeId,
+    context,
+    step,
+    publish,
+}) => {
+    //Publish loading state for google form trigger
+    await publish(
+        googleFormTriggerChannel().status({
+            nodeId,
+            status: "loading",
+        }),
+    );
+    
+
+    const result  = await step.run("google-form-trigger", async() => context);
+
+    await publish(
+        googleFormTriggerChannel().status({
+            nodeId,
+            status: "success",
+        }),
+    );
+
+    //Publish success state for googleForm trigger
+
+    return result;
+};
