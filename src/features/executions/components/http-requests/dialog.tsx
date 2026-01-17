@@ -50,18 +50,21 @@ export const HttpRequestDialog = ({
 
     //reset dialog balues when dialog opens with new defaults
     useEffect(() => {
-        if(open) {
-            form.reset({
-                variableName: defaultValues.variableName || "",
-                endpoint: defaultValues.endpoint || "",
-                method: defaultValues.method || "GET",
-                body: defaultValues.body || "",
-            });
-        }
-    }, [open, defaultValues, form]);
+        if (!open) return;
+      
+        form.reset({
+          variableName: defaultValues.variableName ?? "",
+          endpoint: defaultValues.endpoint ?? "",
+          method: defaultValues.method ?? "GET",
+          body: defaultValues.body ?? "",
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [open]);
+      
 
     const watchVariableName = form.watch("variableName") || "myApiCall";
-    const watchMethod = form.watch("method");
+    const watchMethod = form.watch("method", defaultValues.method ?? "GET");
+
     const showBodyField = ["POST","PUT","PATCH"].includes(watchMethod);
 
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
