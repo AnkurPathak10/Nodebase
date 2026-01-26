@@ -117,7 +117,7 @@ export function NodeSelector ({
 
             const newNode = {
                 id: createId(),
-                date: {},
+                data: {},
                 position: flowPosition,
                 type: selection.type,
             };
