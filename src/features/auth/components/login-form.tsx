@@ -39,7 +39,7 @@ export function LoginForm() {
                 router.push("/");
             },
             onError: () => {
-                toast.error("Soemthing went wrong");
+                toast.error("Something went wrong");
             }
         });
     };
@@ -52,7 +52,7 @@ export function LoginForm() {
                 router.push("/");
             },
             onError: () => {
-                toast.error("Soemthing went wrong");
+                toast.error("Something went wrong");
             }
         });
     };
