@@ -1,6 +1,6 @@
 "use client"
 
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@prisma/client";
 import {createId} from "@paralleldrive/cuid2"
 import{useReactFlow} from "@xyflow/react";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";

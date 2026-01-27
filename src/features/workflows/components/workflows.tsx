@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useWorkflowParams } from "../hooks/use-workflows-params";
 import { useEntitySearch } from "../hooks/use-entity-search";
 import { formatDistanceToNow } from "date-fns";
-import type { Workflow } from "@/generated/prisma/client";
+import type { Workflow } from "@prisma/client";
 import { WorkflowIcon } from "lucide-react";
 
 export const WorkflowsSearch = () => {

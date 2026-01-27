@@ -9,8 +9,10 @@
     "lint": "biome check",
     "ngrok:dev": "ngrok http 3000",
     "format": "biome format --write",
-    "inngest:dev": "inngest-cli dev",
-    "dev:all": "mprocs"
+    "inngest:dev": "npx inngest dev",
+    "dev:all": "mprocs",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.56",
@@ -20,7 +22,7 @@
     "@inngest/realtime": "^0.4.4",
     "@paralleldrive/cuid2": "^3.0.4",
     "@polar-sh/better-auth": "^1.1.9",
-    "@polar-sh/sdk": "^0.35.4",
+    "@polar-sh/sdk": "^0.42.2",
     "@prisma/client": "^6.16.3",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -65,7 +67,6 @@
     "embla-carousel-react": "^8.6.0",
     "handlebars": "^4.7.8",
     "html-entities": "^2.6.0",
-    "inngest": "^3.44.1",
     "input-otp": "^1.4.2",
     "jotai": "^2.15.0",
     "ky": "^1.14.2",
@@ -97,6 +98,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/toposort": "^2.0.7",
+    "inngest": "^3.49.3",
     "inngest-cli": "^1.12.1",
     "mprocs": "^0.7.3",
     "prisma": "^6.16.3",
