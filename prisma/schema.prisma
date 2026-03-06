@@ -4,31 +4,31 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+generator client {                                    //Creates the prisma client code which we import
+  provider = "prisma-client-js"                       // Generate a JavaScript/TypeScript client
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]    // added rhel-openssl-3.0.x for Vercel deployment
 }
 
-datasource db {
+datasource db {                                 //tells prisma which database to use
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id
+model User {                                        //Defines a model for the User table
+  id            String    @id                         //@id marks this as Primary key
   name          String
   email         String
   emailVerified Boolean   @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  workflows     Workflow[]
-  credentials   Credential[]
+  createdAt     DateTime  @default(now())            //@default(now()) Auto-sets to current timestamp
+  updatedAt     DateTime  @default(now()) @updatedAt //@updatedAt Auto-updates to current timestamp on update
+  sessions      Session[]                                //One-to-many relationship with Session table
+  accounts      Account[]                                //One-to-many relationship with Account table
+  workflows     Workflow[]                               //One-to-many relationship with Workflow table. The [] makes it a list/array
+  credentials   Credential[]                             //One-to-many relationship with Credential table
 
-  @@unique([email])
-  @@map("user")
+  @@unique([email])                                     //@unique marks this as unique constraint
+  @@map("user")                        //Changes the table name in the databaseThe model name in Prisma stays the same
 }
 
 model Session {
@@ -102,7 +102,7 @@ model Workflow {
   executions Execution[]
 
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)  // Foreign key pointing to User table
 }
 
 enum NodeType{
@@ -124,7 +124,7 @@ model Node{
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   
   name String
-  type NodeType
+  type NodeType        //can only be one of the values in the NodeType enum
   position Json
   data Json @default("{}")
 
@@ -149,8 +149,8 @@ model Connection{
   workflowId String
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   
-  fromNodeId String
-  fromNode Node @relation("FromNode", fields: [fromNodeId], references: [id], onDelete: Cascade)
+  fromNodeId String                     //This is the actual column in the database that will be created
+  fromNode Node @relation("FromNode", fields: [fromNodeId], references: [id], onDelete: Cascade) //This is a virtual field (doesn't exist in the database). Used by Prisma to fetch the related Node. Type is Node (the model it relates to)
 
   toNodeId String
   toNode Node @relation("ToNode", fields: [toNodeId], references: [id], onDelete: Cascade)
@@ -171,13 +171,13 @@ enum ExecutionStatus {
 }
 
 model Execution{
-  id String @id @default(cuid())
+  id String @id @default(cuid())  //cuid() - Generates a unique ID automatically
 
   workflowId String
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
   status ExecutionStatus @default(RUNNING)
-  error String? @db.Text
+  error String? @db.Text               //String without @db.Text → VARCHAR(255) in PostgreSQL but String with @db.Text → TEXT (unlimited length) in PostgreSQL
   errorStack String? @db.Text
 
   startedAt DateTime @default(now())
